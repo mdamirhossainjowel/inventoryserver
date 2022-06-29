@@ -23,6 +23,7 @@ async function run() {
     await client.connect();
     const db = client.db("inventorysystem");
     const product_collection = db.collection("inventory_products");
+    const catagory_collection = db.collection("inventory_catagory");
   
    
 
@@ -34,6 +35,7 @@ async function run() {
     app.post("/products", async (req, res) => {
       const addProduct = req.body;
       const result = await product_collection.insertOne(addProduct);
+      const result1 = await catagory_collection.insertOne(addProduct);
       res.send(result);
     });
     app.get("/products/:id", async (req, res) => {
@@ -42,9 +44,14 @@ async function run() {
       const result = await product_collection.findOne(filter);
       res.send(result);
     });
-    app.get("/products/:catagory", async (req, res) => {
+    app.get("/catagory", async (req, res) => {
+      const query = {};
+      const result = await catagory_collection.find(query).toArray();
+      res.send(result);
+    });
+    app.get("/catagory/:catagory", async (req, res) => {
       const catagory = req.params.catagory;
-      const result = await product_collection.find({ catagory: catagory }).toArray();
+      const result = await catagory_collection.find({ catagory: catagory }).toArray();
       res.send(result);
     });
     app.delete("/products/:id", async (req, res) => {
